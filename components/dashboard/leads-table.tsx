@@ -1,3 +1,5 @@
+"use client";
+
 import {
     Table,
     TableBody,
@@ -7,6 +9,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useState } from "react";
 
 interface Lead {
     _id: string;
@@ -26,6 +29,38 @@ interface LeadsTableProps {
 export default function LeadsTable({
     leads,
 }: LeadsTableProps) {
+    const [updatingId, setUpdatingId] = useState<
+        string | null
+    >(null);
+
+    //function 
+    const updateLeadStatus = async (
+        leadId: string,
+        status: string
+    ) => {
+        try {
+            setUpdatingId(leadId);
+            const response = await fetch(`/api/leads/${leadId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ status }),
+            });
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(
+                    data.message || "Update failed"
+                );
+            }
+        } catch (error) {
+            console.error("Error updating lead status:", error);
+        } finally {
+            setUpdatingId(null);
+        }
+    };
+
     return (
         <div className="overflow-hidden rounded-2xl border bg-card">
             <Table>
@@ -69,8 +104,16 @@ export default function LeadsTable({
                                 <TableCell>{lead.budget}</TableCell>
 
                                 <TableCell>
-                                    <Select defaultValue={lead.status}>
-                                        <SelectTrigger className="w-35">
+                                    <Select
+                                        defaultValue={lead.status}
+                                        onValueChange={(value) =>
+                                            updateLeadStatus(lead._id, value)
+                                        }
+                                    >
+                                        <SelectTrigger
+                                            className="w-35"
+                                            disabled={updatingId === lead._id}
+                                        >
                                             <SelectValue />
                                         </SelectTrigger>
 
