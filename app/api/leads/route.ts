@@ -13,6 +13,26 @@ export async function POST(request: Request) {
             propertyId: body.propertyId,
         });
 
+        try {
+            await fetch(process.env.N8N_WEBHOOK_URL!, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    leadId: lead._id,
+                    name: lead.name,
+                    email: lead.email,
+                    phone: lead.phone,
+                    budget: lead.budget,
+                    propertyId: lead.propertyId,
+                    status: lead.status,
+                }),
+            });
+        } catch (error) {
+            console.error("n8n webhook failed:", error);
+        }
+
         return NextResponse.json({
             sucess: true,
             message: "Lead created successfully",
