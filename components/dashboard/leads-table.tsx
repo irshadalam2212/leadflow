@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useState } from "react";
+import LeadDetailsSheet from "./lead-details-sheet";
 
 interface Lead {
     _id: string;
@@ -69,10 +70,10 @@ export default function LeadsTable({
                         <TableHead>Name</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Phone</TableHead>
-                        <TableHead>Property ID</TableHead>
                         <TableHead>Budget</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Created At</TableHead>
+                        <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
 
@@ -96,10 +97,6 @@ export default function LeadsTable({
                                 <TableCell>{lead.email}</TableCell>
 
                                 <TableCell>{lead.phone}</TableCell>
-
-                                <TableCell>
-                                    {lead.propertyId}
-                                </TableCell>
 
                                 <TableCell>{lead.budget}</TableCell>
 
@@ -145,6 +142,9 @@ export default function LeadsTable({
                                     {new Date(
                                         lead.createdAt
                                     ).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell>
+                                    <LeadDetailsSheet lead={lead} />
                                 </TableCell>
                             </TableRow>
                         ))
