@@ -1,12 +1,28 @@
+import { connectDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
+import { Lead } from "@/models/Lead";
 
 export async function POST(request: Request) {
-    const body = await request.json();
+    try {
+        const body = await request.json();
 
-    console.log("Lead Received:", body);
+        await connectDB();
 
-    return NextResponse.json({
-        sucess: true,
-        message: "Lead received successfully"
-    });
+        const lead = await Lead.create({
+            ...body,
+            propertyId: body.propertyId,
+        });
+
+        return NextResponse.json({
+            sucess: true,
+            message: "Lead created successfully",
+            lead
+        });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({
+            success: false,
+            message: "Failed to create lead",
+        }, { status: 500 });
+    }
 }

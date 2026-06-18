@@ -19,8 +19,11 @@ const formSchema = z.object({
 });
 
 type LeadInquiryFormValues = z.infer<typeof formSchema>;
+interface LeadInquiryFormProps {
+    propertyId: string;
+}
 
-export default function LeadInquiryForm() {
+export default function LeadInquiryForm({ propertyId }: LeadInquiryFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const form = useForm<LeadInquiryFormValues>({
         resolver: zodResolver(formSchema),
@@ -41,7 +44,10 @@ export default function LeadInquiryForm() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(values)
+                body: JSON.stringify({
+                    ...values,
+                    propertyId,
+                }),
             });
             setIsSubmitting(false);
             const data = await response.json();
