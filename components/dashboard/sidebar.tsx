@@ -1,0 +1,78 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard,
+  Users,
+  Building2,
+  Settings,
+} from "lucide-react";
+
+const menuItems = [
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Leads",
+    href: "/dashboard/leads",
+    icon: Users,
+  },
+  {
+    title: "Properties",
+    href: "/dashboard/properties",
+    icon: Building2,
+  },
+  {
+    title: "Settings",
+    href: "/dashboard/settings",
+    icon: Settings,
+  },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
+
+  return (
+    <aside className="flex h-screen w-64 flex-col border-r bg-background">
+      {/* Logo */}
+      <div className="border-b p-6">
+        <h2 className="text-2xl font-bold">
+          LeadFlow
+        </h2>
+
+        <p className="text-sm text-muted-foreground">
+          CRM Dashboard
+        </p>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 space-y-2 p-4">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+
+          const isActive =
+            pathname === item.href;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-muted"
+              }`}
+            >
+              <Icon className="h-5 w-5" />
+
+              {item.title}
+            </Link>
+          );
+        })}
+      </nav>
+    </aside>
+  );
+}

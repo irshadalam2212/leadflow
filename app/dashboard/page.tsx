@@ -1,3 +1,4 @@
+import RecentLeads from "@/components/dashboard/recent-leads";
 import { connectDB } from "@/lib/mongodb";
 import { Lead } from "@/models/Lead";
 import {
@@ -44,6 +45,11 @@ export default async function DashboardPage() {
             icon: BadgeCheck,
         },
     ];
+
+    const recentLeads = await Lead.find({})
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .lean();
 
     return (
         <div className="container mx-auto px-4 py-10">
@@ -94,6 +100,14 @@ export default async function DashboardPage() {
                     Lead activity timeline and analytics will be
                     added here.
                 </p>
+            </div>
+            {/* Recent Leads Section */}
+            <div className="mt-10">
+                <RecentLeads
+                    leads={JSON.parse(
+                        JSON.stringify(recentLeads)
+                    )}
+                />
             </div>
         </div>
     );
