@@ -1,5 +1,5 @@
 export interface IProperty {
-  id: string;
+  _id: string;
   title: string;
   location: string;
   price: string;
@@ -7,4 +7,7 @@ export interface IProperty {
   bedrooms: number;
   bathrooms: number;
   area: string;
+  description: string;
+  amenities: string[];
+  status: "available" | "sold" | "pending";
 }

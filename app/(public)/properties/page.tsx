@@ -1,8 +1,18 @@
 import PropertyCard from "@/components/property/property-card";
 import PropertyFilters from "@/components/property/property-filter";
-import { properties } from "@/data/property";
+import { connectDB } from "@/lib/mongodb";
+import { Property } from "@/models/Property";
+import { IProperty } from "@/types/property/property.types";
 
-const Page = () => {
+const Page = async () => {
+    await connectDB();
+    const propertyDocuments = await Property.find({ status: "available" })
+        .sort({ createdAt: -1 })
+        .lean();
+    const properties: IProperty[] = JSON.parse(
+        JSON.stringify(propertyDocuments)
+    );
+
     return (
         <div className="container mx-auto px-4 py-12">
             {/* Header Section */}
@@ -31,11 +41,16 @@ const Page = () => {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {properties.map((property) => (
                     <PropertyCard
-                        key={property.id}
+                        key={property._id}
                         property={property}
                     />
                 ))}
             </div>
+            {properties.length === 0 && (
+                <div className="rounded-2xl border border-dashed py-16 text-center text-muted-foreground">
+                    No available properties found.
+                </div>
+            )}
         </div>
     );
 };

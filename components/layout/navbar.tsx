@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Menu, Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +10,6 @@ import {
     SheetContent,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import Container from "../shared/container";
 
 const navLinks = [
     {

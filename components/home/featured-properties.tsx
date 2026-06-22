@@ -1,37 +1,19 @@
 import { MapPin, Star } from "lucide-react";
+import Link from "next/link";
 
 import Container from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { connectDB } from "@/lib/mongodb";
+import { Property } from "@/models/Property";
 
-const properties = [
-  {
-    id: 1,
-    title: "Luxury Villa",
-    location: "Mumbai",
-    price: "₹2.5 Cr",
-    image:
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d",
-  },
-  {
-    id: 2,
-    title: "Modern Apartment",
-    location: "Pune",
-    price: "₹1.2 Cr",
-    image:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
-  },
-  {
-    id: 3,
-    title: "Sea View Penthouse",
-    location: "Goa",
-    price: "₹3.8 Cr",
-    image:
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
-  },
-];
+export default async function FeaturedProperties() {
+  await connectDB();
+  const properties = await Property.find()
+    .sort({ createdAt: -1 })
+    .limit(3)
+    .lean();
 
-export default function FeaturedProperties() {
   return (
     <section className="py-10">
       <Container>
@@ -46,18 +28,20 @@ export default function FeaturedProperties() {
             </h2>
           </div>
 
-          <Button variant="outline" className="rounded-xl">
-            View All
+          <Button asChild variant="outline" className="rounded-xl">
+            <Link href="/properties">View All</Link>
           </Button>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {properties.map((property) => (
             <Card
-              key={property.id}
+              key={property._id.toString()}
               className="overflow-hidden rounded-3xl border-0 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
             >
               <div className="relative">
+                {/* Property image URLs are managed through the dashboard. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={property.image}
                   alt={property.title}
@@ -72,31 +56,33 @@ export default function FeaturedProperties() {
               <CardContent className="p-4">
                 <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
                   <MapPin className="h-4 w-4" />
-
                   {property.location}
                 </div>
 
-                <h3 className="text-2xl font-semibold">
-                  {property.title}
-                </h3>
+                <h3 className="text-2xl font-semibold">{property.title}</h3>
 
                 <div className="mt-6 flex items-center justify-between">
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-
-                    <span className="text-sm font-medium">
-                      4.9 Ratings
-                    </span>
+                    <span className="text-sm font-medium">Featured</span>
                   </div>
 
-                  <Button className="rounded-xl">
-                    View Details
+                  <Button asChild className="rounded-xl">
+                    <Link href={`/properties/${property._id.toString()}`}>
+                      View Details
+                    </Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+
+        {properties.length === 0 && (
+          <div className="rounded-2xl border border-dashed py-12 text-center text-muted-foreground">
+            No featured properties available right now.
+          </div>
+        )}
       </Container>
     </section>
   );

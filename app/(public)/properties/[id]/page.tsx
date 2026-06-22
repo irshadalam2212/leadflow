@@ -6,8 +6,10 @@ import {
     MapPin,
     Ruler,
 } from "lucide-react";
-import { properties } from "@/data/property";
 import LeadInquiryForm from "@/components/property/lead-inquiry-form";
+import { connectDB } from "@/lib/mongodb";
+import { Property } from "@/models/Property";
+import mongoose from "mongoose";
 
 interface PageProps {
     params: Promise<{
@@ -20,9 +22,15 @@ export default async function PropertyDetailsPage({
 }: PageProps) {
     const { id } = await params;
 
-    const property = properties.find(
-        (item) => item.id === id
-    );
+    if (!mongoose.isValidObjectId(id)) {
+        notFound();
+    }
+
+    await connectDB();
+    const property = await Property.findOne({
+        _id: id,
+        status: "available",
+    }).lean();
 
     if (!property) {
         notFound();
@@ -93,12 +101,7 @@ export default async function PropertyDetailsPage({
                             </h3>
 
                             <p className="leading-8 text-muted-foreground">
-                                Experience luxury living in this beautifully
-                                designed property located in one of the most
-                                sought-after areas. Featuring spacious rooms,
-                                modern interiors, premium amenities, and
-                                excellent connectivity, this property is ideal
-                                for families and investors alike.
+                                {property.description}
                             </p>
                         </div>
 
@@ -108,15 +111,9 @@ export default async function PropertyDetailsPage({
                                 Amenities
                             </h3>
 
-                            <div className="grid gap-3 sm:grid-cols-2">
-                                {[
-                                    "Swimming Pool",
-                                    "Gym",
-                                    "Garden",
-                                    "Parking",
-                                    "24x7 Security",
-                                    "Club House",
-                                ].map((amenity) => (
+                            {property.amenities.length > 0 ? (
+                                <div className="grid gap-3 sm:grid-cols-2">
+                                {property.amenities.map((amenity: string) => (
                                     <div
                                         key={amenity}
                                         className="rounded-xl border p-4"
@@ -124,7 +121,12 @@ export default async function PropertyDetailsPage({
                                         {amenity}
                                     </div>
                                 ))}
-                            </div>
+                                </div>
+                            ) : (
+                                <p className="text-muted-foreground">
+                                    No amenities listed.
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -133,7 +135,7 @@ export default async function PropertyDetailsPage({
                 <div>
                     <div className="sticky top-24">
                         <LeadInquiryForm
-                            propertyId={property.id}
+                            propertyId={property._id.toString()}
                         />
                     </div>
                 </div>
