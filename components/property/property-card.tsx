@@ -16,10 +16,10 @@ export default function PropertyCard({
     <Card className="group overflow-hidden rounded-3xl border-0 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Property Image */}
       <div className="relative h-64 overflow-hidden">
-        <Image
+        <img
           src={property.image}
           alt={property.title}
-          fill
+          // fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
 

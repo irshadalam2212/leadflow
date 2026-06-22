@@ -5,8 +5,9 @@ import { Property } from "@/models/Property";
 import { IProperty } from "@/types/property/property.types";
 
 const Page = async () => {
+
     await connectDB();
-    const propertyDocuments = await Property.find({ status: "available" })
+    const propertyDocuments = await Property.find()
         .sort({ createdAt: -1 })
         .lean();
     const properties: IProperty[] = JSON.parse(
