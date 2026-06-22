@@ -1,3 +1,5 @@
+import LeadStatusOverview from "@/components/dashboard/lead-status-overview";
+import RecentActivity from "@/components/dashboard/recent-activity";
 import RecentLeads from "@/components/dashboard/recent-leads";
 import { connectDB } from "@/lib/mongodb";
 import { Lead } from "@/models/Lead";
@@ -16,11 +18,15 @@ export default async function DashboardPage() {
         newLeads,
         contactedLeads,
         closedLeads,
+        qualifiedLeads,
+        lostLeads,
     ] = await Promise.all([
         Lead.countDocuments(),
         Lead.countDocuments({ status: "new" }),
         Lead.countDocuments({ status: "contacted" }),
         Lead.countDocuments({ status: "closed" }),
+        Lead.countDocuments({ status: "qualified" }),
+        Lead.countDocuments({ status: "lost" }),
     ]);
 
     const stats = [
@@ -90,23 +96,32 @@ export default async function DashboardPage() {
                     );
                 })}
             </div>
-            {/* Placeholder Section */}
-            <div className="mt-10 rounded-2xl border bg-card p-6">
-                <h3 className="text-xl font-semibold">
-                    Recent Activity
-                </h3>
-
-                <p className="mt-2 text-muted-foreground">
-                    Lead activity timeline and analytics will be
-                    added here.
-                </p>
-            </div>
             {/* Recent Leads Section */}
             <div className="mt-10">
                 <RecentLeads
                     leads={JSON.parse(
                         JSON.stringify(recentLeads)
                     )}
+                />
+            </div>
+            {/* Recent Activity Section */}
+            <div className="mt-10">
+                <RecentActivity
+                    leads={JSON.parse(
+                        JSON.stringify(recentLeads)
+                    )}
+                />
+            </div>
+            {/* Recent lead status overview section */}
+            <div className="mt-10">
+                <LeadStatusOverview
+                    stats={{
+                        new: newLeads,
+                        contacted: contactedLeads,
+                        qualified: qualifiedLeads,
+                        closed: closedLeads,
+                        lost: lostLeads,
+                    }}
                 />
             </div>
         </div>
