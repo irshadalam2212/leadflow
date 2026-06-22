@@ -13,6 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -20,6 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { FormEvent, useState } from "react";
 
@@ -32,10 +40,18 @@ export interface DashboardProperty {
   bedrooms: number;
   bathrooms: number;
   area: string;
+  description: string;
+  amenities: string[];
+  status: "available" | "sold" | "pending";
   createdAt: string;
 }
 
-type PropertyFields = Omit<DashboardProperty, "_id" | "createdAt">;
+type PropertyFields = Omit<
+  DashboardProperty,
+  "_id" | "createdAt" | "amenities"
+> & {
+  amenities: string;
+};
 
 const emptyProperty: PropertyFields = {
   title: "",
@@ -45,6 +61,9 @@ const emptyProperty: PropertyFields = {
   bedrooms: 0,
   bathrooms: 0,
   area: "",
+  description: "",
+  amenities: "",
+  status: "available",
 };
 
 interface PropertyFormDialogProps {
@@ -64,6 +83,9 @@ function PropertyFormDialog({ property, onSaved }: PropertyFormDialogProps) {
           bedrooms: property.bedrooms,
           bathrooms: property.bathrooms,
           area: property.area,
+          description: property.description ?? "",
+          amenities: (property.amenities ?? []).join(", "),
+          status: property.status ?? "available",
         }
       : emptyProperty
   );
@@ -85,7 +107,13 @@ function PropertyFormDialog({ property, onSaved }: PropertyFormDialogProps) {
         {
           method: property ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
+          body: JSON.stringify({
+            ...form,
+            amenities: form.amenities
+              .split(",")
+              .map((amenity) => amenity.trim())
+              .filter(Boolean),
+          }),
         }
       );
       const data = await response.json();
@@ -194,6 +222,46 @@ function PropertyFormDialog({ property, onSaved }: PropertyFormDialogProps) {
               placeholder="https://images.unsplash.com/..."
             />
           </FormField>
+          <FormField label="Description">
+            <Textarea
+              required
+              value={form.description}
+              onChange={(event) =>
+                updateField("description", event.target.value)
+              }
+              placeholder="Describe the property, location advantages, and key features."
+              className="min-h-24"
+            />
+          </FormField>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField label="Amenities">
+              <Input
+                value={form.amenities}
+                onChange={(event) =>
+                  updateField("amenities", event.target.value)
+                }
+                placeholder="Pool, Gym, Parking"
+              />
+              <span className="block text-xs font-normal text-muted-foreground">
+                Separate amenities with commas.
+              </span>
+            </FormField>
+            <FormField label="Status">
+              <Select
+                value={form.status}
+                onValueChange={(value) => updateField("status", value)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="available">Available</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="sold">Sold</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormField>
+          </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
@@ -327,13 +395,14 @@ export default function PropertiesTable({
               <TableHead>Bedrooms</TableHead>
               <TableHead>Bathrooms</TableHead>
               <TableHead>Area</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {properties.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+                <TableCell colSpan={8} className="h-32 text-center text-muted-foreground">
                   No properties yet. Add your first property to get started.
                 </TableCell>
               </TableRow>
@@ -349,7 +418,14 @@ export default function PropertiesTable({
                         alt=""
                         className="h-12 w-16 rounded-lg object-cover"
                       />
-                      <span className="max-w-52 truncate font-medium">{property.title}</span>
+                      <div className="max-w-52">
+                        <p className="truncate font-medium">{property.title}</p>
+                        {property.description && (
+                          <p className="truncate text-xs text-muted-foreground">
+                            {property.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>{property.location}</TableCell>
@@ -357,6 +433,19 @@ export default function PropertiesTable({
                   <TableCell>{property.bedrooms}</TableCell>
                   <TableCell>{property.bathrooms}</TableCell>
                   <TableCell>{property.area}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize ${
+                        property.status === "sold"
+                          ? "bg-destructive/10 text-destructive"
+                          : property.status === "pending"
+                            ? "bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                            : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                      }`}
+                    >
+                      {property.status ?? "available"}
+                    </span>
+                  </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-2">
                       <PropertyFormDialog property={property} onSaved={handleSaved} />

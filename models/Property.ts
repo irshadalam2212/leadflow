@@ -37,6 +37,19 @@ const propertySchema = new Schema(
       required: true,
       trim: true,
     },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    amenities: [{
+      type: String,
+    }],
+    status: {
+      type: String,
+      enum: ["available", "sold", "pending"],
+      default: "available",
+    },
   },
   {
     timestamps: true,

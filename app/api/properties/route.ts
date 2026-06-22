@@ -8,7 +8,10 @@ const requiredFields = [
   "price",
   "image",
   "area",
+  "description",
 ] as const;
+
+const propertyStatuses = ["available", "sold", "pending"] as const;
 
 export async function POST(request: Request) {
   try {
@@ -19,13 +22,22 @@ export async function POST(request: Request) {
     );
     const bedrooms = Number(body.bedrooms);
     const bathrooms = Number(body.bathrooms);
+    const status = String(body.status || "available");
+    const amenities = Array.isArray(body.amenities)
+      ? body.amenities
+          .map((amenity: unknown) => String(amenity).trim())
+          .filter(Boolean)
+      : [];
 
     if (
       hasMissingField ||
       !Number.isFinite(bedrooms) ||
       bedrooms < 0 ||
       !Number.isFinite(bathrooms) ||
-      bathrooms < 0
+      bathrooms < 0 ||
+      !propertyStatuses.includes(
+        status as (typeof propertyStatuses)[number]
+      )
     ) {
       return NextResponse.json(
         { success: false, message: "Please provide valid property details." },
@@ -43,6 +55,9 @@ export async function POST(request: Request) {
       bedrooms,
       bathrooms,
       area: body.area,
+      description: body.description,
+      amenities,
+      status,
     });
 
     return NextResponse.json(

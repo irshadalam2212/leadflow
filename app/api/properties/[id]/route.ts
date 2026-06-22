@@ -7,6 +7,8 @@ interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
+const propertyStatuses = ["available", "sold", "pending"] as const;
+
 export async function PATCH(request: Request, { params }: RouteContext) {
   try {
     const { id } = await params;
@@ -21,12 +23,19 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     const body = await request.json();
     const bedrooms = Number(body.bedrooms);
     const bathrooms = Number(body.bathrooms);
+    const status = String(body.status || "");
+    const amenities = Array.isArray(body.amenities)
+      ? body.amenities
+          .map((amenity: unknown) => String(amenity).trim())
+          .filter(Boolean)
+      : [];
     const requiredValues = [
       body.title,
       body.location,
       body.price,
       body.image,
       body.area,
+      body.description,
     ];
 
     if (
@@ -34,7 +43,10 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       !Number.isFinite(bedrooms) ||
       bedrooms < 0 ||
       !Number.isFinite(bathrooms) ||
-      bathrooms < 0
+      bathrooms < 0 ||
+      !propertyStatuses.includes(
+        status as (typeof propertyStatuses)[number]
+      )
     ) {
       return NextResponse.json(
         { success: false, message: "Please provide valid property details." },
@@ -54,6 +66,9 @@ export async function PATCH(request: Request, { params }: RouteContext) {
         bedrooms,
         bathrooms,
         area: body.area,
+        description: body.description,
+        amenities,
+        status,
       },
       { new: true, runValidators: true }
     );
