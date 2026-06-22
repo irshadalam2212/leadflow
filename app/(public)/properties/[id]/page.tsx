@@ -27,10 +27,13 @@ export default async function PropertyDetailsPage({
     }
 
     await connectDB();
-    const property = await Property.findOne({
-        _id: id,
-        status: "available",
-    }).lean();
+    // const property = await Property.findOne({
+    //     _id: id,
+    //     status: "available",
+    // }).lean();
+    const property = await Property.findById(id).lean();
+
+    // console.log("Property:", property);
 
     if (!property) {
         notFound();
@@ -111,9 +114,9 @@ export default async function PropertyDetailsPage({
                                 Amenities
                             </h3>
 
-                            {property.amenities.length > 0 ? (
+                            {property?.amenities?.length > 0 ? (
                                 <div className="grid gap-3 sm:grid-cols-2">
-                                {property.amenities.map((amenity: string) => (
+                                {property.amenities?.map((amenity: string) => (
                                     <div
                                         key={amenity}
                                         className="rounded-xl border p-4"

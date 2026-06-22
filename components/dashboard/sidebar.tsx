@@ -7,6 +7,7 @@ import {
   Users,
   Building2,
   Settings,
+  KanbanSquare,
 } from "lucide-react";
 
 const menuItems = [
@@ -30,13 +31,18 @@ const menuItems = [
     href: "/dashboard/settings",
     icon: Settings,
   },
+  {
+    title: "Pipeline",
+    href: "/dashboard/pipeline",
+    icon: KanbanSquare,
+  }
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col border-r bg-background">
+    <aside className="flex h-full w-56 shrink-0 flex-col border-r bg-background">
       {/* Logo */}
       <div className="border-b p-6">
         <h2 className="text-2xl font-bold">
@@ -60,11 +66,10 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-                isActive
+              className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${isActive
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-muted"
-              }`}
+                }`}
             >
               <Icon className="h-5 w-5" />
 
