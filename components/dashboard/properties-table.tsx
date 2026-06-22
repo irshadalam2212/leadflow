@@ -73,20 +73,21 @@ interface PropertyFormDialogProps {
 
 function PropertyFormDialog({ property, onSaved }: PropertyFormDialogProps) {
   const [open, setOpen] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [form, setForm] = useState<PropertyFields>(
     property
       ? {
-          title: property.title,
-          location: property.location,
-          price: property.price,
-          image: property.image,
-          bedrooms: property.bedrooms,
-          bathrooms: property.bathrooms,
-          area: property.area,
-          description: property.description ?? "",
-          amenities: (property.amenities ?? []).join(", "),
-          status: property.status ?? "available",
-        }
+        title: property.title,
+        location: property.location,
+        price: property.price,
+        image: property.image,
+        bedrooms: property.bedrooms,
+        bathrooms: property.bathrooms,
+        area: property.area,
+        description: property.description ?? "",
+        amenities: (property.amenities ?? []).join(", "),
+        status: property.status ?? "available",
+      }
       : emptyProperty
   );
   const [isSaving, setIsSaving] = useState(false);
@@ -94,6 +95,37 @@ function PropertyFormDialog({ property, onSaved }: PropertyFormDialogProps) {
 
   function updateField(field: keyof PropertyFields, value: string | number) {
     setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  async function handleImageUpload(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    setUploadingImage(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setForm((prev) => ({
+          ...prev,
+          image: data.imageUrl,
+        }));
+      }
+    } finally {
+      setUploadingImage(false);
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -216,10 +248,9 @@ function PropertyFormDialog({ property, onSaved }: PropertyFormDialogProps) {
           <FormField label="Image URL">
             <Input
               required
-              type="url"
-              value={form.image}
-              onChange={(event) => updateField("image", event.target.value)}
-              placeholder="https://images.unsplash.com/..."
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
             />
           </FormField>
           <FormField label="Description">
@@ -373,8 +404,8 @@ export default function PropertiesTable({
 
       return exists
         ? current.map((property) =>
-            property._id === savedProperty._id ? savedProperty : property
-          )
+          property._id === savedProperty._id ? savedProperty : property
+        )
         : [savedProperty, ...current];
     });
   }
@@ -435,13 +466,12 @@ export default function PropertiesTable({
                   <TableCell>{property.area}</TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize ${
-                        property.status === "sold"
+                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize ${property.status === "sold"
                           ? "bg-destructive/10 text-destructive"
                           : property.status === "pending"
                             ? "bg-amber-500/10 text-amber-700 dark:text-amber-400"
                             : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                      }`}
+                        }`}
                     >
                       {property.status ?? "available"}
                     </span>
