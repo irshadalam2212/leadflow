@@ -20,7 +20,6 @@ export default function FollowUpReminders({
   leads,
 }: FollowUpRemindersProps) {
 
-    console.log(leads, "log: follow up")
   return (
     <div className="rounded-2xl border bg-card p-6">
       <div className="mb-6 flex items-center justify-between">

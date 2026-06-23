@@ -33,8 +33,6 @@ export default async function PropertyDetailsPage({
     // }).lean();
     const property = await Property.findById(id).lean();
 
-    // console.log("Property:", property);
-
     if (!property) {
         notFound();
     }

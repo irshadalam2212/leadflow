@@ -51,11 +51,7 @@ export default function LeadDetailsSheet({
   );
 
   async function handleSave() {
-    console.log("Saving:", {
-      assignedTo,
-      notes,
-      followUpDate,
-    });
+    
     try {
       const response = await fetch(
         `/api/leads/${lead._id}`,
