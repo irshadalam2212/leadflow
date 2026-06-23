@@ -13,7 +13,7 @@ export default async function LeadsPage() {
     <div className="container mx-auto px-4 py-10">
       <div className="mb-8">
         <h1 className="text-4xl font-bold">
-          Leads Dashboard
+          Leads
         </h1>
 
         <p className="mt-2 text-muted-foreground">

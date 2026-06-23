@@ -23,7 +23,7 @@ interface Lead {
   status: string;
   assignedTo?: string;
   notes?: string;
-  followUpDate?: Date | null;
+  followUpDate?: string | Date | null;
   message?: string;
   createdAt: string;
 }
@@ -42,7 +42,7 @@ export default function LeadDetailsSheet({
   const [notes, setNotes] =
     useState(lead.notes || "");
 
-  const [followUpDate, setFollowUpDate] = useState(
+  const [followUpDate, setFollowUpDate] = useState<string>(
     lead.followUpDate
       ? new Date(lead.followUpDate)
         .toISOString()
@@ -51,6 +51,11 @@ export default function LeadDetailsSheet({
   );
 
   async function handleSave() {
+    console.log("Saving:", {
+      assignedTo,
+      notes,
+      followUpDate,
+    });
     try {
       const response = await fetch(
         `/api/leads/${lead._id}`,
