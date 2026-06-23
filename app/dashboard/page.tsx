@@ -57,6 +57,10 @@ export default async function DashboardPage() {
         .limit(5)
         .lean();
 
+    const leads = await Lead.find({})
+        .select("name activity")
+        .lean();
+
     return (
         <div className="container mx-auto px-4 py-10">
             <div className="mb-10">
@@ -108,7 +112,7 @@ export default async function DashboardPage() {
             <div className="mt-10">
                 <RecentActivity
                     leads={JSON.parse(
-                        JSON.stringify(recentLeads)
+                        JSON.stringify(leads)
                     )}
                 />
             </div>

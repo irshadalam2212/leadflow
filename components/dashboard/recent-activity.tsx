@@ -1,13 +1,21 @@
 import {
   Clock,
+  FileText,
+  RefreshCcw,
+  UserCheck,
   UserPlus,
 } from "lucide-react";
+
+interface Activity {
+  action: string;
+  value: string;
+  createdAt: string;
+}
 
 interface Lead {
   _id: string;
   name: string;
-  status: string;
-  createdAt: string;
+  activity?: Activity[];
 }
 
 interface RecentActivityProps {
@@ -17,6 +25,58 @@ interface RecentActivityProps {
 export default function RecentActivity({
   leads,
 }: RecentActivityProps) {
+  const activities = leads
+    .flatMap((lead) =>
+      (lead.activity || []).map((activity) => ({
+        leadName: lead.name,
+        ...activity,
+      }))
+    )
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() -
+        new Date(a.createdAt).getTime()
+    )
+    .slice(0, 10);
+
+  const getActivityDetails = (
+    action: string,
+    value: string,
+    leadName: string
+  ) => {
+    switch (action) {
+      case "lead_created":
+        return {
+          icon: UserPlus,
+          text: `${leadName} created a new inquiry`,
+        };
+
+      case "assigned":
+        return {
+          icon: UserCheck,
+          text: `${leadName} assigned to ${value}`,
+        };
+
+      case "status_changed":
+        return {
+          icon: RefreshCcw,
+          text: `${leadName} status changed to ${value}`,
+        };
+
+      case "note_added":
+        return {
+          icon: FileText,
+          text: `${leadName} note updated`,
+        };
+
+      default:
+        return {
+          icon: Clock,
+          text: `${leadName} activity updated`,
+        };
+    }
+  };
+
   return (
     <div className="rounded-2xl border bg-card p-6">
       <div className="mb-6">
@@ -30,47 +90,46 @@ export default function RecentActivity({
       </div>
 
       <div className="space-y-5">
-        {leads.length === 0 ? (
+        {activities.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No recent activity.
           </p>
         ) : (
-          leads.map((lead) => (
-            <div
-              key={lead._id}
-              className="flex gap-4"
-            >
-              {/* Icon */}
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                <UserPlus className="h-5 w-5 text-primary" />
-              </div>
+          activities.map((activity, index) => {
+            const details =
+              getActivityDetails(
+                activity.action,
+                activity.value,
+                activity.leadName
+              );
 
-              {/* Content */}
-              <div className="flex-1">
-                <p className="text-sm">
-                  <span className="font-semibold">
-                    {lead.name}
-                  </span>{" "}
-                  created a new inquiry.
-                </p>
+            const Icon = details.icon;
 
-                <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
+            return (
+              <div
+                key={`${activity.createdAt}-${index}`}
+                className="flex gap-4"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <Icon className="h-5 w-5 text-primary" />
+                </div>
 
-                  {new Date(
-                    lead.createdAt
-                  ).toLocaleString()}
+                <div className="flex-1">
+                  <p className="text-sm">
+                    {details.text}
+                  </p>
+
+                  <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+
+                    {new Date(
+                      activity.createdAt
+                    ).toLocaleString()}
+                  </div>
                 </div>
               </div>
-
-              {/* Status */}
-              <div>
-                <span className="rounded-full border px-3 py-1 text-xs font-medium">
-                  {lead.status}
-                </span>
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

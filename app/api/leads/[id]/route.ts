@@ -12,27 +12,29 @@ export async function PATCH(
         const body = await request.json();
         await connectDB();
 
-        const lead = await Lead.findByIdAndUpdate(
-            id,
-            {
-                ...(body.status !== undefined && {
-                    status: body.status,
-                }),
+        // const lead = await Lead.findByIdAndUpdate(
+        //     id,
+        //     {
+        //         ...(body.status !== undefined && {
+        //             status: body.status,
+        //         }),
 
-                ...(body.assignedTo !== undefined && {
-                    assignedTo: body.assignedTo,
-                }),
+        //         ...(body.assignedTo !== undefined && {
+        //             assignedTo: body.assignedTo,
+        //         }),
 
-                ...(body.notes !== undefined && {
-                    notes: body.notes,
-                }),
-            },
-            {
-                new: true,
-                runValidators: true,
-            }
-        );
-        
+        //         ...(body.notes !== undefined && {
+        //             notes: body.notes,
+        //         }),
+        //     },
+        //     {
+        //         new: true,
+        //         runValidators: true,
+        //     }
+        // );
+
+        const lead = await Lead.findById(id);
+
         if (!lead) {
             return NextResponse.json(
                 {
@@ -44,13 +46,50 @@ export async function PATCH(
                 }
             );
         }
+
+        if (!lead.activity) {
+            lead.activity = [];
+        }
+
+        if (body.status !== undefined) {
+            lead.status = body.status;
+
+            lead.activity.push({
+                action: "status_changed",
+                value: body.status,
+            });
+        }
+
+        if (body.assignedTo !== undefined) {
+            lead.assignedTo = body.assignedTo;
+
+            lead.activity.push({
+                action: "assigned",
+                value: body.assignedTo,
+            });
+        }
+
+        if (body.notes !== undefined) {
+            lead.notes = body.notes;
+
+            lead.activity.push({
+                action: "note_added",
+                value: body.notes,
+            });
+        }
+
+        await lead.save();
+
         return NextResponse.json({
             success: true,
             lead,
         });
     }
     catch (error) {
-        console.error(error)
+        console.error(
+            "PATCH LEAD ERROR:",
+            JSON.stringify(error, null, 2)
+        );
         return NextResponse.json(
             {
                 success: false,

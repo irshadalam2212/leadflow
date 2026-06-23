@@ -10,6 +10,12 @@ export async function POST(request: Request) {
 
         const lead = await Lead.create({
             ...body,
+            activity: [
+                {
+                    action: "lead_created",
+                    value: "Lead created",
+                },
+            ],
             propertyId: body.propertyId,
         });
 

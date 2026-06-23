@@ -33,6 +33,20 @@ const leadSchema = new Schema({
         type: String,
         default: "new",
     },
+    notes: {
+        type: String,
+        default: "",
+    },
+    activity: [
+        {
+            action: String,
+            value: String,
+            createdAt: {
+                type: Date,
+                default: Date.now,
+            },
+        },
+    ],
 },
     {
         timestamps: true,
