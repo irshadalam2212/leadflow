@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 
 export default auth((req) => {
-  console.log("PROXY RUNNING");
+
   const isLoggedIn = !!req.auth;
 
   const isDashboard = req.nextUrl.pathname.startsWith(

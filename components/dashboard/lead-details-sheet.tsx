@@ -11,6 +11,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import LeadTasks from "./lead-tasks";
 
 interface Lead {
   _id: string;
@@ -207,6 +208,10 @@ export default function LeadDetailsSheet({
               placeholder="Add notes..."
             />
           </div>
+
+          <LeadTasks
+            leadId={lead._id}
+          />
 
           {/* Timeline */}
           <div className="rounded-xl border p-4">
