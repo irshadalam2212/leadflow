@@ -8,6 +8,7 @@ import {
   Building2,
   Settings,
   KanbanSquare,
+  CheckSquare,
 } from "lucide-react";
 import LogoutButton from "./logout-button";
 
@@ -36,6 +37,11 @@ const menuItems = [
     title: "Pipeline",
     href: "/dashboard/pipeline",
     icon: KanbanSquare,
+  },
+  {
+    title: "Tasks",
+    href: "/dashboard/tasks",
+    icon: CheckSquare,
   }
 ];
 

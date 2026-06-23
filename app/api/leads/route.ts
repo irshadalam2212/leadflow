@@ -53,3 +53,28 @@ export async function POST(request: Request) {
         }, { status: 500 });
     }
 }
+
+export async function GET() {
+    try {
+        await connectDB();
+
+        const leads = await Lead.find({})
+            .sort({ createdAt: -1 })
+            .lean();
+
+        return NextResponse.json({
+            success: true,
+            leads,
+        });
+    } catch (error) {
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Failed to fetch leads",
+            },
+            {
+                status: 500,
+            }
+        );
+    }
+}
