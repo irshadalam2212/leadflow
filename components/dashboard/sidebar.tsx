@@ -9,6 +9,7 @@ import {
   Settings,
   KanbanSquare,
 } from "lucide-react";
+import LogoutButton from "./logout-button";
 
 const menuItems = [
   {
@@ -67,8 +68,8 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted"
+                ? "bg-primary text-primary-foreground"
+                : "hover:bg-muted"
                 }`}
             >
               <Icon className="h-5 w-5" />
@@ -78,6 +79,9 @@ export default function Sidebar() {
           );
         })}
       </nav>
+      <div className="border-t p-4">
+        <LogoutButton />
+      </div>
     </aside>
   );
 }
