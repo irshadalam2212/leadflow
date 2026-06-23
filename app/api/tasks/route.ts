@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Task } from "@/models/task";
-import { Lead } from "@/models/Lead";
 
 
 export async function GET() {
   try {
     await connectDB();
 
-    const leads = await Lead.find({})
+    const tasks = await Task.find({})
       .sort({ createdAt: -1 })
       .lean();
 
     return NextResponse.json({
       success: true,
-      leads,
+      tasks,
     });
   } catch (error) {
     console.error("GET LEADS ERROR:", error);
