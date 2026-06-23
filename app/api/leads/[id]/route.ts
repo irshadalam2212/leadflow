@@ -12,27 +12,6 @@ export async function PATCH(
         const body = await request.json();
         await connectDB();
 
-        // const lead = await Lead.findByIdAndUpdate(
-        //     id,
-        //     {
-        //         ...(body.status !== undefined && {
-        //             status: body.status,
-        //         }),
-
-        //         ...(body.assignedTo !== undefined && {
-        //             assignedTo: body.assignedTo,
-        //         }),
-
-        //         ...(body.notes !== undefined && {
-        //             notes: body.notes,
-        //         }),
-        //     },
-        //     {
-        //         new: true,
-        //         runValidators: true,
-        //     }
-        // );
-
         const lead = await Lead.findById(id);
 
         if (!lead) {

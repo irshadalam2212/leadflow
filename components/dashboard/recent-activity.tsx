@@ -25,6 +25,8 @@ interface RecentActivityProps {
 export default function RecentActivity({
   leads,
 }: RecentActivityProps) {
+  console.log(leads, "log: leads")
+  
   const activities = leads
     .flatMap((lead) =>
       (lead.activity || []).map((activity) => ({
