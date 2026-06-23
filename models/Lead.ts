@@ -41,6 +41,10 @@ const leadSchema = new Schema({
         type: Date,
         default: null,
     },
+    lastReminderSentAt: {
+        type: Date,
+        default: null,
+    },
     activity: [
         {
             action: String,

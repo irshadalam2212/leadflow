@@ -52,8 +52,6 @@ export default function LeadInquiryForm({ propertyId }: LeadInquiryFormProps) {
             setIsSubmitting(false);
             const data = await response.json();
 
-            console.log("Response:", data);
-
             if (data.success) {
                 alert("Inquiry submitted successfully!");
 
