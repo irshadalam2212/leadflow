@@ -1,3 +1,4 @@
+import FollowUpReminders from "@/components/dashboard/follow-up-reminders";
 import LeadStatusOverview from "@/components/dashboard/lead-status-overview";
 import RecentActivity from "@/components/dashboard/recent-activity";
 import RecentLeads from "@/components/dashboard/recent-leads";
@@ -70,6 +71,16 @@ export default async function DashboardPage() {
         .limit(5)
         .lean();
 
+    const followUps = await Lead.find({
+        followUpDate: {
+            $ne: null,
+        },
+    })
+        .sort({
+            followUpDate: 1,
+        })
+        .limit(5)
+        .lean();
     return (
         <div className="container mx-auto px-4 py-10">
             <div className="mb-10">
@@ -118,15 +129,23 @@ export default async function DashboardPage() {
                 />
             </div>
             {/* Recent Activity Section */}
-            <div className="grid gap-6 lg:grid-cols-2 mt-10">
+            <div className="mt-10">
                 <RecentActivity
                     leads={JSON.parse(
                         JSON.stringify(recentLeads)
                     )}
                 />
+            </div>
+            <div className="grid gap-6 lg:grid-cols-2 mt-10">
                 <TodaysTasks
                     tasks={JSON.parse(
                         JSON.stringify(tasks)
+                    )}
+                />
+
+                <FollowUpReminders
+                    leads={JSON.parse(
+                        JSON.stringify(followUps)
                     )}
                 />
             </div>

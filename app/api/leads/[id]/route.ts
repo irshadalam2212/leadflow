@@ -57,6 +57,18 @@ export async function PATCH(
             });
         }
 
+        if (
+            body.followUpDate !== undefined
+        ) {
+            lead.followUpDate =
+                body.followUpDate;
+
+            lead.activity.push({
+                action: "follow_up_set",
+                value: body.followUpDate,
+            });
+        }
+
         await lead.save();
 
         return NextResponse.json({

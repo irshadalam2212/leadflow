@@ -1,4 +1,5 @@
 import {
+  CalendarClock,
   Clock,
   FileText,
   RefreshCcw,
@@ -26,7 +27,7 @@ export default function RecentActivity({
   leads,
 }: RecentActivityProps) {
   console.log(leads, "log: leads")
-  
+
   const activities = leads
     .flatMap((lead) =>
       (lead.activity || []).map((activity) => ({
@@ -69,6 +70,12 @@ export default function RecentActivity({
         return {
           icon: FileText,
           text: `${leadName} note updated`,
+        };
+
+      case "follow_up_set":
+        return {
+          icon: CalendarClock,
+          text: `${leadName} follow-up scheduled`,
         };
 
       default:

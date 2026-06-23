@@ -37,6 +37,10 @@ const leadSchema = new Schema({
         type: String,
         default: "",
     },
+    followUpDate: {
+        type: Date,
+        default: null,
+    },
     activity: [
         {
             action: String,

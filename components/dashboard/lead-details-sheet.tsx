@@ -23,6 +23,7 @@ interface Lead {
   status: string;
   assignedTo?: string;
   notes?: string;
+  followUpDate?: Date | null;
   message?: string;
   createdAt: string;
 }
@@ -41,6 +42,14 @@ export default function LeadDetailsSheet({
   const [notes, setNotes] =
     useState(lead.notes || "");
 
+  const [followUpDate, setFollowUpDate] = useState(
+    lead.followUpDate
+      ? new Date(lead.followUpDate)
+        .toISOString()
+        .split("T")[0]
+      : ""
+  );
+
   async function handleSave() {
     try {
       const response = await fetch(
@@ -54,6 +63,7 @@ export default function LeadDetailsSheet({
           body: JSON.stringify({
             assignedTo,
             notes,
+            followUpDate,
           }),
         }
       );
@@ -206,6 +216,22 @@ export default function LeadDetailsSheet({
               rows={5}
               className="w-full rounded-lg border p-3"
               placeholder="Add notes..."
+            />
+          </div>
+
+          {/* Follow Up Date */}
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              Follow-Up Date
+            </label>
+
+            <input
+              type="date"
+              value={followUpDate}
+              onChange={(e) =>
+                setFollowUpDate(e.target.value)
+              }
+              className="w-full rounded-lg border p-2"
             />
           </div>
 
