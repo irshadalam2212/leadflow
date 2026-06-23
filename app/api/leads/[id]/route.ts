@@ -6,7 +6,7 @@ export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
-    console.log("Updating lead with ID:", params);
+
     try {
         const { id } = await params;
         const body = await request.json();
@@ -15,12 +15,24 @@ export async function PATCH(
         const lead = await Lead.findByIdAndUpdate(
             id,
             {
-                status: body.status
+                ...(body.status !== undefined && {
+                    status: body.status,
+                }),
+
+                ...(body.assignedTo !== undefined && {
+                    assignedTo: body.assignedTo,
+                }),
+
+                ...(body.notes !== undefined && {
+                    notes: body.notes,
+                }),
             },
             {
-                new: true
+                new: true,
+                runValidators: true,
             }
-        )
+        );
+        
         if (!lead) {
             return NextResponse.json(
                 {

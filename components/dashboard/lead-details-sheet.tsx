@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface Lead {
   _id: string;
@@ -19,6 +20,8 @@ interface Lead {
   budget: string;
   propertyId: string;
   status: string;
+  assignedTo?: string;
+  notes?: string;
   message?: string;
   createdAt: string;
 }
@@ -30,6 +33,42 @@ interface LeadDetailsSheetProps {
 export default function LeadDetailsSheet({
   lead,
 }: LeadDetailsSheetProps) {
+
+  const [assignedTo, setAssignedTo] =
+    useState(lead.assignedTo || "");
+
+  const [notes, setNotes] =
+    useState(lead.notes || "");
+
+  async function handleSave() {
+    try {
+      const response = await fetch(
+        `/api/leads/${lead._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            assignedTo,
+            notes,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error();
+      }
+
+      alert("Lead updated");
+    } catch {
+      alert("Failed to update lead");
+    }
+  }
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -41,7 +80,7 @@ export default function LeadDetailsSheet({
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-lg overflow-y-auto px-5 pb-5">
         <SheetHeader>
           <SheetTitle>
             Lead Details
@@ -94,6 +133,36 @@ export default function LeadDetailsSheet({
                 </span>{" "}
                 {lead.status}
               </div>
+
+              <div>
+                <label className="mb-2 block font-medium">
+                  Assigned To
+                </label>
+
+                <select
+                  value={assignedTo}
+                  onChange={(e) =>
+                    setAssignedTo(e.target.value)
+                  }
+                  className="w-full rounded-lg border p-2"
+                >
+                  <option value="">
+                    Unassigned
+                  </option>
+
+                  <option value="John">
+                    John
+                  </option>
+
+                  <option value="Rahul">
+                    Rahul
+                  </option>
+
+                  <option value="Amit">
+                    Amit
+                  </option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -123,6 +192,22 @@ export default function LeadDetailsSheet({
             </p>
           </div>
 
+          <div className="rounded-xl border p-4">
+            <h3 className="mb-4 font-semibold">
+              Internal Notes
+            </h3>
+
+            <textarea
+              value={notes}
+              onChange={(e) =>
+                setNotes(e.target.value)
+              }
+              rows={5}
+              className="w-full rounded-lg border p-3"
+              placeholder="Add notes..."
+            />
+          </div>
+
           {/* Timeline */}
           <div className="rounded-xl border p-4">
             <h3 className="mb-4 font-semibold">
@@ -139,6 +224,12 @@ export default function LeadDetailsSheet({
             </div>
           </div>
         </div>
+        <Button
+          className="w-full"
+          onClick={handleSave}
+        >
+          Save Changes
+        </Button>
       </SheetContent>
     </Sheet>
   );

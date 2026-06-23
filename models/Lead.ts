@@ -25,7 +25,10 @@ const leadSchema = new Schema({
         type: String,
         required: true,
     },
-
+    assignedTo: {
+        type: String,
+        default: "",
+    },
     status: {
         type: String,
         default: "new",

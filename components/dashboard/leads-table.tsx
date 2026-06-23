@@ -20,6 +20,7 @@ interface Lead {
     budget: string;
     propertyId: string;
     status: string;
+    assignedTo: string;
     createdAt: string;
 }
 
@@ -72,7 +73,8 @@ export default function LeadsTable({
                         <TableHead>Phone</TableHead>
                         <TableHead>Budget</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Created At</TableHead>
+                        <TableHead>Assigned to</TableHead>
+                        <TableHead>Created at</TableHead>
                         <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -138,6 +140,9 @@ export default function LeadsTable({
                                     </Select>
                                 </TableCell>
 
+                                <TableCell>
+                                    {lead?.assignedTo || "-"}
+                                </TableCell>
                                 <TableCell>
                                     {new Date(
                                         lead.createdAt

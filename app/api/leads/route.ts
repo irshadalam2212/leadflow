@@ -27,6 +27,7 @@ export async function POST(request: Request) {
                     budget: lead.budget,
                     propertyId: lead.propertyId,
                     status: lead.status,
+                    assignedTo: lead.assignTo
                 }),
             });
         } catch (error) {
