@@ -10,6 +10,7 @@ import LeadInquiryForm from "@/components/property/lead-inquiry-form";
 import { connectDB } from "@/lib/mongodb";
 import { Property } from "@/models/Property";
 import mongoose from "mongoose";
+import { formatCurrency } from "@/lib/utils";
 
 interface PageProps {
     params: Promise<{
@@ -68,7 +69,7 @@ export default async function PropertyDetailsPage({
                         </div>
 
                         <h2 className="text-3xl font-bold text-primary">
-                            {property.price}
+                            {formatCurrency(property.price)}
                         </h2>
 
                         {/* Features */}
@@ -90,7 +91,7 @@ export default async function PropertyDetailsPage({
                             <div className="flex flex-col items-center gap-2">
                                 <Ruler className="h-6 w-6 text-primary" />
                                 <span className="font-medium">
-                                    {property.area}
+                                    {property.area} Sq.ft
                                 </span>
                             </div>
                         </div>
@@ -102,7 +103,7 @@ export default async function PropertyDetailsPage({
                             </h3>
 
                             <p className="leading-8 text-muted-foreground">
-                                {property.description}
+                                {property.description || "-"}
                             </p>
                         </div>
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { connectDB } from "@/lib/mongodb";
 import { Property } from "@/models/Property";
+import { formatCurrency } from "@/lib/utils";
 
 export default async function FeaturedProperties() {
   await connectDB();
@@ -49,7 +50,7 @@ export default async function FeaturedProperties() {
                 />
 
                 <div className="absolute right-4 top-4 rounded-full bg-background/90 px-4 py-2 text-sm font-semibold shadow">
-                  {property.price}
+                  {formatCurrency(property?.price)}
                 </div>
               </div>
 

@@ -4,6 +4,7 @@ import { Bath, BedDouble, MapPin, Ruler } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { IProperty } from "@/types/property/property.types";
+import { formatCurrency } from "@/lib/utils";
 
 interface PropertyCardProps {
   property: IProperty;
@@ -24,7 +25,7 @@ export default function PropertyCard({
         />
 
         <div className="absolute right-4 top-4 rounded-full bg-background/90 px-4 py-2 text-sm font-semibold shadow-md backdrop-blur">
-          {property.price}
+          {formatCurrency(property.price)}
         </div>
       </div>
 
