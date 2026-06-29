@@ -5,7 +5,7 @@ import RecentLeads from "@/components/dashboard/recent-leads";
 import TodaysTasks from "@/components/dashboard/todays-task";
 import { connectDB } from "@/lib/mongodb";
 import { Lead } from "@/models/Lead";
-import { Task } from "@/models/task";
+import { Task } from "@/models/Task";
 import {
     Users,
     UserPlus,

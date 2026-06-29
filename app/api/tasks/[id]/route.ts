@@ -1,5 +1,5 @@
 import { connectDB } from "@/lib/mongodb";
-import { Task } from "@/models/task";
+import { Task } from "@/models/Task";
 import { NextResponse } from "next/server";
 
 export async function PATCH(
