@@ -35,4 +35,4 @@ const contactSchema = new Schema(
     }
 );
 
-export const Contact = models.Lead || model("Contact", contactSchema);
+export const Contact = models.Contact || model("Contact", contactSchema);

@@ -9,6 +9,7 @@ import {
   Settings,
   KanbanSquare,
   CheckSquare,
+  MessageSquare,
 } from "lucide-react";
 import LogoutButton from "./logout-button";
 
@@ -42,6 +43,11 @@ const menuItems = [
     title: "Tasks",
     href: "/dashboard/tasks",
     icon: CheckSquare,
+  },
+  {
+    title: "Contacts",
+    href: "/dashboard/contacts",
+    icon: MessageSquare,
   }
 ];
 
