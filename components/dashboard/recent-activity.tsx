@@ -1,4 +1,5 @@
 import {
+  BellRing,
   CalendarClock,
   Clock,
   FileText,
@@ -75,6 +76,12 @@ export default function RecentActivity({
         return {
           icon: CalendarClock,
           text: `${leadName} follow-up scheduled`,
+        };
+      
+        case "reminder_sent":
+        return {
+          icon: BellRing,
+          text: `${leadName} reminder sent to ${value}`,
         };
 
       default:
