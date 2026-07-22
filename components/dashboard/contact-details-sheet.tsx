@@ -32,7 +32,7 @@ export default function ContactDetailsSheet({
 
   async function saveStatus() {
     await fetch(
-      `/api/contact/${contact._id}`,
+      `/api/contacts/${contact._id}`,
       {
         method: "PATCH",
         headers: {

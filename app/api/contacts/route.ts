@@ -10,6 +10,7 @@ export async function POST(request: Request) {
         if (
             !body.name ||
             !body.email ||
+            !body.phone ||
             !body.message
         ) {
             return NextResponse.json(
@@ -25,6 +26,21 @@ export async function POST(request: Request) {
         }
 
         await connectDB();
+
+        const existingContact = await Contact.findOne({
+            email: body.email,
+            message: body.message,
+        });
+
+        if (existingContact) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "This inquiry has already been submitted.",
+                },
+                { status: 409 }
+            );
+        }
 
         const contact = await Contact.create({
             name: body.name,
@@ -53,7 +69,6 @@ export async function POST(request: Request) {
                 success: true,
                 message:
                     "Contact request submitted successfully.",
-                contact,
             },
             {
                 status: 201,
