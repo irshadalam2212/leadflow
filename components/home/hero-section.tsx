@@ -5,6 +5,7 @@ import { ArrowRight, BadgeCheck, Building2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Container from "@/components/shared/container";
+import Link from "next/link";
 
 export default function HeroSection() {
     return (
@@ -37,21 +38,24 @@ export default function HeroSection() {
                         </p>
 
                         {/* Actions */}
-                        <div className="mt-8 flex flex-wrap gap-4">
-                            <Button size="lg" className="rounded-xl px-8">
-                                Explore Properties
+                        {/* <div className="mt-8 flex flex-wrap gap-4">
+                            <Link href="/properties">
+                                <Button size="lg" className="rounded-xl px-8">
+                                    Explore Properties
+                                    <ArrowRight className="ml-2 h-5 w-5" />
+                                </Button>
+                            </Link>
 
-                                <ArrowRight className="ml-2 h-5 w-5" />
-                            </Button>
-
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                className="rounded-xl px-8"
-                            >
-                                Book Consultation
-                            </Button>
-                        </div>
+                            <Link href="/contact">
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="rounded-xl px-8"
+                                >
+                                    Book Consultation
+                                </Button>
+                            </Link>
+                        </div> */}
 
                         {/* Stats */}
                         <div className="mt-14 grid grid-cols-3 gap-8">
@@ -93,7 +97,7 @@ export default function HeroSection() {
                         </div>
 
                         {/* Floating Property Card */}
-                        <Card className="absolute -bottom-10 left-1/2 w-[90%] -translate-x-1/2 rounded-3xl border bg-background/90 shadow-2xl backdrop-blur-xl">
+                        <Card className="absolute -bottom-10 left-1/2 w-[90%] -translate-x-1/2 rounded-3xl border bg-background/90 shadow-2xl backdrop-blur-xl pointer-events-none">
                             <CardContent className="flex items-center justify-between gap-6 p-6">
                                 {/* Left */}
                                 <div className="flex items-center gap-4">
